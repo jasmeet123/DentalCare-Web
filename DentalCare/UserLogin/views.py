@@ -69,14 +69,14 @@ class UserLogout (APIView):
     permission_classes = (IsAuthenticated,)
 
     @csrf_exempt
-    def post(self, Request):
-        user = UserLogin.objects.all().filter(fbuserId = "110153760463685751")
-        serializer = UserLoginSerializer(user,data=Request.data)
-        if(serializer.is_valid()):
-            serializer.update(user,Request)
-            return Response(status=200 ,data={
+    def get(self, request):
+        id =  self.request.query_params.get('id', 100)
+        user = UserLogin.objects.get(fbuserId=id)
+        user.enable = False
+        user.save()
+        return Response(status=200 ,data={
                          'success': False,
-                         'reason': "User updated",
+                         'reason': "User Logged out",
                      })
 
             # request_data = serializer.data

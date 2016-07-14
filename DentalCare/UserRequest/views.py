@@ -27,15 +27,16 @@ class UserRequest(APIView):
     def post(self, request):
         serializer = UserRequestSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+
             data = serializer.data
             title =  data.get("request_title",'')
             desc = data.get('request_desc','')
             user_email = data.get('request_user','')
-            send_email = self.get_dentist(user_email,request)
+
+            send_email = self.get_dentist(user_email,serializer)
+            serializer.save()
             if send_email != "":
                 self.sendEmail(title,desc,send_email)
-
 
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -44,9 +45,12 @@ class UserRequest(APIView):
 
 
 
-    def get_dentist(self, email,request):
+    def get_dentist(self, email,serializer):
         dentist = Dentist.objects.all()
         user = UserLogin.objects.get(email=email)
+        user_dentist = user.user_dentist
+        if user_dentist != None:
+            return user.user_dentist.email
         if user != None:
             count = dentist.count()
             user_zip = user.zip
@@ -60,7 +64,10 @@ class UserRequest(APIView):
                     pass
                 else:
                     dentist_email = dentist_item.email
-                    request.request_dentist = dentist_item.id
+                    user.user_dentist = dentist_item
+                    serializer.validated_data['request_dentist'] = dentist_item
+                    user.save()
+
                     return dentist_email
 
         return ""
