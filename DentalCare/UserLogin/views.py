@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 
 from rest_framework.views import APIView
+from rest_framework.parsers import JSONParser
 
 from .models import UserLogin
 from .serializer import UserLoginSerializer
@@ -41,18 +42,31 @@ class FacebookLoginOrSignup(APIView):
                     return Response(status=200 ,data={
                          'success': True,
                          'reason': "User created",
+                         'data':user.values()
+
                     })
                 else:
                     return Response(status=200 ,data={
                          'success': False,
                          'reason': "User already exist",
+                         'data':user.values()
                      })
             except Exception,e:
                   return Response(status=400 ,data={
                          'success': False,
                          'reason':e,
                      })
-
+    @csrf_exempt
+    def put(self,request,pk):
+        user = UserLogin.objects.all().get(pk=pk)
+        data = JSONParser().parse(request)
+        user.zip = data.get('zip','')
+        user.email = data.get('email','')
+        user.save()
+        return Response(status=200 ,data={
+                         'success': True,
+                         'reason': "User updated",
+                     })
 
 
 
@@ -70,7 +84,7 @@ class UserLogout (APIView):
 
     @csrf_exempt
     def get(self, request):
-        id =  self.request.query_params.get('id', 100)
+        id =  self.request.query_params.get('id', '')
         user = UserLogin.objects.get(fbuserId=id)
         user.enable = False
         user.save()

@@ -29,6 +29,8 @@ from Tips.views import TipViewSet
 from Tips.views import TipTodayList
 from UserLogin.views import UserLogout
 from dentist_login.views import DentistView
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -37,9 +39,13 @@ urlpatterns = [
     url(r'^tips/$', csrf_exempt(TipViewSet.as_view())),
     url(r'^request/$',csrf_exempt(UserRequest.as_view()), name = "request"),
     url(r'^logout/$',csrf_exempt(UserLogout.as_view()), name = "logout"),
-    url(r'^facebook-signup/$', csrf_exempt(FacebookLoginOrSignup.as_view()), name='facebook-login-signup'),
+    url(r'^facebook-signup/$', csrf_exempt(FacebookLoginOrSignup.as_view()), name='facebook-signup'),
+    url(r'^facebook-signup/(?P<pk>\d+)/$', csrf_exempt(FacebookLoginOrSignup.as_view()), name='facebook-signup'),
     url(r'^tips/(?P<date>(\d{4}-\d{2}-\d{2}))/$', TipTodayList.as_view(),name='tiplist'),
     url(r'^api-auth/', include('rest_framework.urls',
                                 namespace='rest_framework')),
     url(r'^api-token-auth/', views.obtain_auth_token),
-]
+]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+
+
+

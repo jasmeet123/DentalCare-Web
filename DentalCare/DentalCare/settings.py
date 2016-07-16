@@ -140,8 +140,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'jasmeet.manak@gmail.com'
-EMAIL_HOST_PASSWORD = 'Jassi12hello'
+EMAIL_HOST_USER = 'admin@dentalcareapp.com'
+EMAIL_HOST_PASSWORD = 'Waheguru1'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
@@ -177,3 +177,5 @@ SOCIALACCOUNT_PROVIDERS = {
         'VERIFIED_EMAIL': False
     }
 }
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+MEDIA_URL = '/media/'

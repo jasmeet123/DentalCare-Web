@@ -43,6 +43,13 @@ class UserRequest(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+    @csrf_exempt
+    def get(self, request):
+        id =  self.request.query_params.get('id', '')
+        user = UserLogin.objects.get(fbuserId=id)
+        user_requests = Request.objects.all().filter(request_user=user.email)
+        return Response(user_requests, status=status.HTTP_201_CREATED)
+
 
 
     def get_dentist(self, email,serializer):
@@ -71,17 +78,6 @@ class UserRequest(APIView):
                     return dentist_email
 
         return ""
-
-
-
-
-
-
-
-
-
-
-
 
 
     @csrf_exempt

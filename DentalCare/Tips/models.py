@@ -11,7 +11,7 @@ class Tip(models.Model):
     id = models.AutoField(primary_key=True);
     title = models.CharField(max_length= 200);
     desc = models.CharField(max_length=1000);
-    image = models.ImageField(upload_to="tips_image", null=True)
+    image = models.ImageField(upload_to="tips_image/", null=True)
     date = models.DateField(default=date.today())
     owner = models.ForeignKey(Dentist, related_name='tips')
 
